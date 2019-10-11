@@ -1,3 +1,4 @@
+
 {
 	"server_name" 				: "tt_vm",
 	"server1_name"  			: "tt_vm1",
@@ -45,3 +46,4 @@
 	"overcloud_rc_file_path"	: "/home/osp_admin/r8-14grc",
 	"static_volume"				: "volume"
 }
+

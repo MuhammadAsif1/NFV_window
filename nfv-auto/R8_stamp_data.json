@@ -1,3 +1,4 @@
+
 {
   "cntl0" : "192.168.120.129",
   "cntl1" : "192.168.120.125",
@@ -16,3 +17,4 @@
   "csp_profile_ini_file_path" : "/root/r8_js13.2.csp.ini",
   "properties_file_path" : "/root/r8_js13.2.csp.properties"
 }
+
