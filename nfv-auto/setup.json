@@ -1,3 +1,4 @@
+
 {
 	"server_name" 				: "tt_vm",
 	"server1_name"  			: "tt_vm1",
@@ -24,17 +25,16 @@
 	"cidr2"						: "192.168.30.0/24",
 	"gateway_ip2" 				: "192.168.30.1",
 	"static_flavor"				: "sanity_flavor",
-	"ovsdpdk_flavor"			: "m1.medium",
+	"ovsdpdk_flavor"			: "sanity_flavor",
 	"static_image"				: "centos",
 	"encrypted_image"			: "centos_7_signed",
-	"rhel_image"				: "rhel7_7",
 	"static_network" 			: "st_network",
 	"static_subnet"				: "st_subnet",
 	"static_cidr"				: "192.168.20.0/24",
 	"static_gateway"			: "192.168.20.1",
 	"static_router"				: "st_router",
 	"static_port"				: "st_port",
-	"static_secgroup"			: "d41edfb7-27d0-4b08-87a9-2c9af3a66a98",
+	"static_secgroup"			: "3c4d208d-b859-4e74-989e-849ec1e751bd",
 	"key_name"					: "ssh-key",
 	"key_file_path"				: "/home/osp_admin/ssh-key.pem",
 	"nginx_repo_path"			: "/home/osp_admin/NFV_window/nfv-auto/nginx.repo",
@@ -46,3 +46,4 @@
 	"overcloud_rc_file_path"	: "/home/osp_admin/r8-14grc",
 	"static_volume"				: "volume"
 }
+

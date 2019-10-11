@@ -9,6 +9,7 @@ import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import datetime
+import paramiko
 
 ssh_obj = ssh_functions()
 creation_object = Os_Creation_Modules()
@@ -98,10 +99,14 @@ def check_huge_page_size_from(ip_of_node, username):
     ssh_obj.ssh_close()
     return huge_pages_size
 
-
+"""
 def create_instance_with_dpdk_flavor(assign_floating_ip, server_name=data["server_name"],
                                      flavor_name=data["ovsdpdk_flavor"]):
-    # flavor = create_ovs_dpdk_flavor(flavor_name, ram_size, no_of_vcpus, disk_size)
+
+    #flavor = create_ovs_dpdk_flavor(flavor_name, ram_size, no_of_vcpus, disk_size)
+    creation_object.os_network_creation(logger, conn_create, data["static_network"], data["static_cidr"], data["static_subnet"], data["static_gateway"])
+    creation_object.os_router_creation(logger, conn_create, data["static_router"], data["static_port"], data["static_network"])
+
     if assign_floating_ip is True:
         server_munch = creation_object.os_server_creation_with_floating_ip(logger, conn_create, server_name=server_name,
                                                                            flavor_name=flavor_name,
@@ -124,10 +129,10 @@ def create_ovs_dpdk_flavor():
     flavor = creation_object.os_flavor_ovsdpdk_creation(logger, conn_create, name=data["ovsdpdk_flavor"], ram=4096, vcpus=4,
                                                         disk=40)
     return flavor
-
+"""
 
 # Validates the OVS DPDK works fine with floating IP
-def test_case_3():
+'''def test_case_3():
     logger.info("\n==========================================================================")
     logger.info("Executing Test Case 3 (Validates the OVS DPDK works fine with floating IP)")
     logger.info("==========================================================================")
@@ -140,8 +145,8 @@ def test_case_3():
         #                                                   key_name=data["key_name"])
         # f_ip_munch = creation_object.os_floating_ip_creation_assignment(conn_create, server_name=data["server_name"])
         # flt_ip = str(f_ip_munch.floating_ip_address)
-        # pdb.set_trace()
-        server_munch = create_instance_with_dpdk_flavor(assign_floating_ip=True, server_name=data["server_name"],)
+        pdb.set_trace()
+        #server_munch = self.create_instance_with_dpdk_flavor(self, assign_floating_ip=False)
         # pdb.set_trace()
         flt_ip = server_munch[1]
         # pdb.set_trace()
@@ -165,48 +170,130 @@ def test_case_3():
         ssh_obj.ssh_close()
         # Deleting instance after test execution
         delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+
+        delete_object.os_deleting_router_with_1_network(self, logger, conn_delete, data["static_network"], data["static_router"], data["static_port"])
     except:
         delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+        delete_object.os_deleting_router_with_1_network(self, logger, conn_delete, data["static_network"], data["static_router"], data["static_port"])
+
         logger.info ("\nError encountered while executing Test Case: 3!")
         logger.info ("Error: " + str(sys.exc_info()[0]))
         logger.info ("Cause: " + str(sys.exc_info()[1]))
+        logger.info ("Line No: %s \n" % (sys.exc_info()[2].tb_lineno)) 
+'''
+def test_case_3(flavor_name, availability_zone, image_name, port_name, server_name, secgroup_name, network_name, router_name, subnet_name, cidr, gateway, deleteall=True):
+               
+    try:
+        # flavor = creation_object.os_flavor_ovsdpdk_creation(logger, conn_create, name=flavor_name,
+        #                                            ram=4096, vcpus=6, disk=40)
+        output = creation_object.os_create_dpdk_enabled_instance(logger, conn_create, network_name=network_name, port_name=port_name, router_name=router_name, subnet_name=subnet_name, cidr=cidr, gateway=gateway, flavor_name=flavor_name, availability_zone=availability_zone, image_name=image_name, server_name=server_name, security_group_name=secgroup_name)
+        time.sleep(10)
+        ping = ssh_obj.locally_ping_check(logger, ip=output[2][1])
+        if ping:
+            logger.info ("Test 3 SUCCESSFUL")
+        else:
+            logger.info ("Test 3 FAILED")
+        if deleteall:
+            delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+        else:
+            logger.info ("Note: Nothing is deleted!")
+
+        return output
+
+
+    except:
+        logger.info ("Unable to execute test case 3")
+        logger.info ("\nError: " + str(sys.exc_info()[0]))
+        logger.info ("Cause: " + str(sys.exc_info()[1]))
         logger.info ("Line No: %s \n" % (sys.exc_info()[2].tb_lineno))
-
-
-def test_case_4():
+        delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+ ######################################################################################   
+def test_case_4(flavor_name, availability_zone, image_name, port_name, server_name, secgroup_name, network_name, router_name, subnet_name, cidr, gateway, cmpt0, cmpt1, cmpt2, deleteall=True):
     logger.info("\n=====================================================================================")
     logger.info("Executing Test Case 4 (Validate Hugepages are enabled and working fine with OVS DPDK)")
     logger.info("=====================================================================================")
-    # compute_node_ips_list = ["192.168.24.10"]
+    #compute_node_ips_list = "192.168.120.141"
     try:
-        huge_page_sizes_list = []
-        for node in cmpt_dict:
-            huge_page_size = check_huge_page_size_from(cmpt_dict[node], username_of_nodes)
-            huge_page_sizes_list.append(huge_page_size)
+        #huge_page_sizes_list = []
+        #for node in cmpt_dict:
+            #huge_page_size = check_huge_page_size_from(cmpt_dict[node], username_of_nodes)
+            #huge_page_sizes_list.append(huge_page_size)
         # flavor = create_ovs_dpdk_flavor(flavor_name=data["ovsdpdk_flavor"])
-        server_munch = create_instance_with_dpdk_flavor(assign_floating_ip=False, server_name=data["server_name"])
-        logger.info("Instance Created.")
-        logger.info("Need to add the test case pass fail criteria!!!")
-        delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+
+        #server_munch = create_instance_with_dpdk_flavor(assign_floating_ip=False, server_name=data["server_name"])
+        output = creation_object.os_create_dpdk_enabled_instance(logger, conn_create, network_name=network_name, port_name=port_name, router_name=router_name, subnet_name=subnet_name, cidr=cidr, gateway=gateway, flavor_name=flavor_name, availability_zone=availability_zone, image_name=image_name, server_name=server_name, security_group_name=secgroup_name)
+        time.sleep(10)
+        ping = ssh_obj.locally_ping_check(logger, ip=output[2][1])
+        if ping:
+            #################################################
+            ### this 'hugespages_check(nova)' will go into compute node and will check hugepages count from /proc/meminfo, should be hugepages=1048576 
+            def hugepages_check(nova):
+                client=paramiko.SSHClient()
+                client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                client.connect(nova, username='heat-admin')
+                def command_function(com):
+                    output=""
+                    stdin, stdout, stderr = client.exec_command(com)
+                    stdout=stdout.readlines()
+                    for line in stdout:
+                        output=output+line
+                    return output
+
+                com="grep 'Huge' /proc/meminfo"
+                y=command_function(com)
+                x=os.popen("echo '%s' | awk '/Hugepagesize/ {print $2}' "% y).read()
+                hpsize="1048576"
+                sl = len(hpsize)
+                hugepages = x[:sl]
+                if hugepages==hpsize:
+                   print('Hugepages : %s'% hpsize)
+                   print('===============Test Case Executed Successfully on %s ================='% nova)
+                else:
+                   print('=============== Test Case Failed on %s ================'% nova)
+                   
+            hugepages_check(cmpt0)
+            hugepages_check(cmpt1)
+            hugepages_check(cmpt2)
+                
+            #################################################
+        else:
+            logger.info ("Test 4 FAILED")
+        if deleteall:
+            delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+        else:
+            logger.info ("Note: Nothing is deleted!")
+
+        return output
+
+
     except:
         logger.info ("\nError encountered while executing Test Case: 4 !")
         logger.info ("Error: " + str(sys.exc_info()[0]))
         logger.info ("Cause: " + str(sys.exc_info()[1]))
         logger.info ("Line No: %s \n" % (sys.exc_info()[2].tb_lineno))
-        delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
 
+        delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+###############################################################################################################
+def test_case_5(flavor_name, availability_zone, image_name, port_name, server_name, secgroup_name, network_name, router_name, subnet_name, cidr, gateway, cmpt0, cmpt1, cmpt2, deleteall=True):
 
-def test_case_5():
     logger.info("\n==============================================================================================")
     logger.info("Executing Test Case 5 (Validate Numa is enabled and CPU pinning is working fine with OVS DPDK)")
     logger.info("==============================================================================================")
     try:
         # create_ovs_dpdk_flavor()
         # pdb.set_trace()
-        server_munch = create_instance_with_dpdk_flavor(assign_floating_ip=True, server_name=data["server_name"])
-        logger.info("Instance Created.")
+        #server_munch = create_instance_with_dpdk_flavor(assign_floating_ip=True, server_name=data["server_name"])
+        #logger.info("Instance Created.")
         # pdb.set_trace()
         # time.sleep(22)
+        output = creation_object.os_create_dpdk_enabled_instance(logger, conn_create, network_name=network_name, port_name=port_name, router_name=router_name, subnet_name=subnet_name, cidr=cidr, gateway=gateway, flavor_name=flavor_name, availability_zone=availability_zone, image_name=image_name, server_name=server_name, security_group_name=secgroup_name)
+        time.sleep(10)
+        ping = ssh_obj.locally_ping_check(logger, ip=output[2][1])
+        if ping:
+            logger.info ("Test 3 SUCCESSFUL")
+        else:
+            logger.info ("Test 3 FAILED")
+        ###################################################################################
         server_id = str(conn_create.get_server(data["server_name"]).id)#str(server_munch.id)
         command = "sudo virsh dumpxml %s" % server_id
         ssh_obj.ssh_to(logger, cmpt[0], username_of_nodes)
@@ -214,15 +301,29 @@ def test_case_5():
         output = ssh_obj.execute_command_return_output(logger, command)
         logger.info (output)
         logger.info ("Need to add the test case pass fail criteria!!!")
+        
+        if deleteall:
+            delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+        else:
+            logger.info ("Note: Nothing is deleted!")
+
+        return output
         # run virsh dumpxml <instance_id> on compute where instance is provisioned
         # delete both ; instance and flavor
-        delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+
+        #delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+        #delete_object.os_deleting_router_with_1_network(self, logger, conn, data["static_network"], data["static_router"], data["static_port"])
+
     except:
         logger.info ("Error encountered while executing Test Case: 5 !")
         logger.info ("\nError: " + str(sys.exc_info()[0]))
         logger.info ("Cause: " + str(sys.exc_info()[1]))
         logger.info ("Line No: %s \n" % (sys.exc_info()[2].tb_lineno))
-        delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+
+        delete_object.delete_1_instance_and_router_with_1_network(logger, conn_delete, server_name=server_name, network_name=network_name, router_name=router_name, port_name=port_name)
+        #delete_object.os_delete_server(logger, conn_delete, server_name=data["server_name"])
+        #delete_object.os_deleting_router_with_1_network(self, logger, conn, data["static_network"], data["static_router"], data["static_port"])
+
         # delete_object.os_deleting_flavor(conn_delete, data["flavor_name"]
 
 # def test_case_6():
@@ -405,6 +506,8 @@ def test_case_15():
         output = ssh_obj.ping_check_from_namespace(namespace_id, ip_of_instance1=server1_ip, username_of_instance=image_name,
                                     key_file_path_of_node=destination_path, ip_of_instance2=server2_ip, packet_size=None)
         """
+        ## testing things
+        ##how to merge repos
     except:
         logger.info ("\nError encountered while executing Test Case: 15!")
         logger.info ("Error: " + str(sys.exc_info()[0]))
@@ -522,16 +625,19 @@ def test_case_23():
 
 
 # pdb.set_trace()
-# test_case_3()
-# test_case_4()
-# test_case_5()
+
+#test_case_3(data["ovsdpdk_flavor"], data["zone1"], data["static_image"], data["port_name"], data["server_name"], data["static_secgroup"], data["static_network"], data["static_router"], data["subnet_name"], data["cidr"], data["gateway_ip"], deleteall=True)
+
+#test_case_4(data["ovsdpdk_flavor"], data["zone1"], data["static_image"], data["port_name"], data["server_name"], data["static_secgroup"], data["static_network"], data["static_router"], data["subnet_name"], data["cidr"], data["gateway_ip"], cmpt[0], cmpt[1], cmpt[2], deleteall=True)
+#test_case_5(data["ovsdpdk_flavor"], data["zone1"], data["static_image"], data["port_name"], data["server_name"], data["static_secgroup"], data["static_network"], data["static_router"], data["subnet_name"], data["cidr"], data["gateway_ip"], cmpt[0], cmpt[1], cmpt[2], deleteall=True)
+
 # test_case_9()
 # test_case_10()
 # test_case_11()
 # test_case_13_diff_comp_same_net()
 # test_case_13_same_comp_same_net()
 # test_case_14()
-# test_case_15()
+test_case_15()
 # test_case_16()
-test_case_17()
+# test_case_17()
 # test_case_23()
