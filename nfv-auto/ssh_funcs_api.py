@@ -179,6 +179,21 @@ class ssh_functions():
             p_flag = 0
         return p_flag
 
+    def simple_ping_check_using_inteface(self, logger, ip_to_ping, interface):
+        """
+            ping to ip of node 1: ping -c 5 -I <interface> <ip of node 1>
+            if expected output is seen in the ping result it returns true else false
+        """
+        output = self.execute_command_return_output(logger, "ping -c 5 -I %s %s" % (interface, ip_to_ping))
+        exp_output = "5 packets transmitted, 5 received, 0% packet loss"
+        p_flag = False
+        logger.info( output)
+        if exp_output in output:
+            p_flag = 1
+        else:
+            p_flag = 0
+        return p_flag
+
 
     def send_key_if_not_present(self, logger, destination_path):
         key_name = destination_path.split("/")[3]

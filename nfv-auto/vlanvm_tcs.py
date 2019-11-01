@@ -275,7 +275,7 @@ def test_case4():
     try:
         # instance_private_ip =
         ssh_obj.ssh_to(logger, controller_ip,"heat-admin")
-        res = ssh_obj.execute_command_show_output(logger, "sudo ip netns exec qdhcp-%s ssh -i key.pem centos@%s"%(namespace_id, instance_private_ip))
+        res = ssh_obj.execute_command_show_output(logger, "sudo ip netns exec qdhcp-%s ssh -i ssh-key.pem centos@%s"%(namespace_id, instance_private_ip))
         res = ssh_obj.execute_command_show_output(logger, "ifconfig")
         if instance_private_ip in res:
             print ("TEST SUCCESSFUL")
@@ -300,7 +300,7 @@ def test_case5():
     print("==========================================================================================================")
     try:
         # instance_private_ip =
-        ssh_obj.ssh_with_key(logger, instance_floating_ip, username="centos", key_file_name="~/key.pem")
+        ssh_obj.ssh_with_key(logger, instance_floating_ip, username="centos", key_file_name="~/ssh-key.pem")
         res = ssh_obj.execute_command_show_output(logger, "ifconfig")
         if instance_private_ip in res:
             print ("TEST SUCCESSFUL")
@@ -316,6 +316,28 @@ def test_case5():
 
 
 def test_case6():
+    parent_network1 = vlan_data["parent_network"]
+    parent_network2 = vlan_data["parent_network1"]
+    parentport_name1 = vlan_data["parentport_name"]
+    parentport_name2 = vlan_data["parentport_name1"]
+    subport_network = vlan_data["subport_network"]
+    subport_name1 = vlan_data["subport_name"]
+    subport_name2 = vlan_data["subport_name1"]
+    trunk_name = vlan_data["trunk_name"]
+    flavor_name = vlan_data["static_flavor"]
+    availability_zone = vlan_data["zone3"]
+    image_name = vlan_data["static_image"]
+    server_name1 = vlan_data["server_name"]
+    server_name2 = vlan_data["server_name1"]
+    security_group = vlan_data["static_secgroup"]
+    segmentation_id = vlan_data["segmentation_id"]
+    segmentation_type = vlan_data["segmentation_type"]
+    old_eth_file_path = vlan_data["old_eth_file_path"]
+    old_route_file_path = vlan_data["old_route_file_path"]
+    gateway = vlan_data["gateway"]
+    metricnumber=vlan_data["metricnumber"]
+    key_file_path=vlan_data["key_file_path"]
+    interface = "eth0.%s"%segmentation_id
     """Create two instances from different parent ports and ping the vm-1's vlan-interface ip from vm-2's interface on the same vlan network"""
     print("==========================================================================================================")
     print("====         VLAN AWARE VMS CASE 6:Create two instances from different parent ports                  =====")
@@ -323,29 +345,57 @@ def test_case6():
     print("==========================================================================================================")
     try:
         print("========             SERVER 1 CREATING WITH DIFFERENT PARENT PORT                                =====")
-        output = creation_object.os_create_vlan_aware_instance(logger, conn_create, parent_network, parentport_name,
-                                                               subport_network, subport_name,
-                                                               trunk_name, flavor_name, availability_zone, image_name,
-                                                               server_name, sec_group,
-                                                               segmentation_id, segmentation_type)
+        output = creation_object.os_create_vlan_aware_instance(logger, conn_create, parent_network=parent_network1,
+                                                               parentport_name=parentport_name1,
+                                                               subport_network=subport_network,
+                                                               subport_name=subport_name1,
+                                                               trunk_name=trunk_name,
+                                                               flavor_name=flavor_name,
+                                                               availability_zone=availability_zone,
+                                                               image_name=image_name,
+                                                               server_name=server_name1,
+                                                               sec_group=security_group,
+                                                               segmentation_id=segmentation_id,
+                                                               segmentation_type=segmentation_type)
 
         pdb.set_trace()
         server_ip = output[2]
         subport_ip = output[3]
         ssh_obj.ssh_vlan_aware_vm(logger, server_ip, old_eth_file_path, new_eth_file_path, old_route_file_path,
                                   new_route_file_path, subport_ip, gateway, segmentation_id, metricnumber)
+        ssh_obj.ssh_close()
         print("========             SERVER 2 CREATING WITH DIFFERENT PARENT PORT                                =====")
-        res = creation_object.os_create_vlan_aware_instance(logger, conn_create, parent_network, parentport_name,
-                                                               subport_network, subport_name,
-                                                               trunk_name, flavor_name, availability_zone, image_name,
-                                                               server_name, sec_group,
-                                                               segmentation_id, segmentation_type)
+        res = creation_object.os_create_vlan_aware_instance(logger, conn_create, parent_network=parent_network2,
+                                                               parentport_name=parentport_name2,
+                                                               subport_network=subport_network,
+                                                               subport_name=subport_name2,
+                                                               trunk_name=trunk_name,
+                                                               flavor_name=flavor_name,
+                                                               availability_zone=availability_zone,
+                                                               image_name=image_name,
+                                                               server_name=server_name2,
+                                                               sec_group=security_group,
+                                                               segmentation_id=segmentation_id,
+                                                               segmentation_type=segmentation_type)
 
         pdb.set_trace()
-        server_ip = res[2]
-        subport_ip = res[3]
-        ssh_obj.ssh_vlan_aware_vm(logger, server_ip, old_eth_file_path, new_eth_file_path, old_route_file_path,
-                                  new_route_file_path, subport_ip, gateway, segmentation_id, metricnumber)
+        server_ip1 = res[2]
+        subport_ip1 = res[3]
+        ssh_obj.ssh_vlan_aware_vm(logger, server_ip1, old_eth_file_path, new_eth_file_path, old_route_file_path,
+                                  new_route_file_path, subport_ip1, gateway, segmentation_id, metricnumber)
+        ssh_obj.ssh_close()
+        ssh_obj.ssh_to(logger, ip=instance_floating_ip, username="centos", key_file_name=key_file_path)
+        ping = simple_ping_check_using_inteface(logger, subport_ip1, interface)
+        time.sleep(50)
+
+        if ping == 1:
+            logger.info("Test SUCCESSFUL")
+        else:
+            logger.info("Test failed")
+
+        ssh_obj.ssh_close()
+        ssh_obj.ssh_close()
+        return instance_private_ip
     except:
         print "Unable to execute test case 11"
         print ("\nError: " + str(sys.exc_info()[0]))
