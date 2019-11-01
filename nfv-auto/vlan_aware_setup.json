@@ -27,5 +27,14 @@
 	"trunk_name1" 							: "trunk_port1",
 	"server_name1" 							: "trunk_server1",
 	"gateway1" 								: "192.168.0.1",
-	"metricnumber1" 						: "209"
+	"metricnumber1" 						: "209",
+	"parent_network3" 						: "st_network3",
+	"subport_network3" 						: "st_sub_network3",
+	"parentport_name3" 						: "parent_port3",
+	"subport_name3" 						: "sub_port3",
+	"segmentation_id3" 						: "205",
+	"trunk_name3" 							: "trunk_port3",
+	"server_name3" 							: "trunk_server3",
+	"gateway3" 								: "192.168.0.1",
+	"metricnumber3" 						: "209"
 }
