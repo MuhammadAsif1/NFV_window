@@ -404,6 +404,28 @@ def test_case6():
 
 
 def test_case7():
+    parent_network1 = vlan_data["parent_network"]
+    parent_network2 = vlan_data["parent_network1"]
+    parentport_name1 = vlan_data["parentport_name"]
+    parentport_name2 = vlan_data["parentport_name1"]
+    subport_network = vlan_data["subport_network"]
+    subport_name1 = vlan_data["subport_name"]
+    subport_name2 = vlan_data["subport_name1"]
+    trunk_name = vlan_data["trunk_name"]
+    flavor_name = vlan_data["static_flavor"]
+    availability_zone = vlan_data["zone3"]
+    image_name = vlan_data["static_image"]
+    server_name1 = vlan_data["server_name"]
+    server_name2 = vlan_data["server_name1"]
+    security_group = vlan_data["static_secgroup"]
+    segmentation_id = vlan_data["segmentation_id"]
+    segmentation_type = vlan_data["segmentation_type"]
+    old_eth_file_path = vlan_data["old_eth_file_path"]
+    old_route_file_path = vlan_data["old_route_file_path"]
+    gateway = vlan_data["gateway"]
+    metricnumber = vlan_data["metricnumber"]
+    key_file_path = vlan_data["key_file_path"]
+    interface = "eth0.%s" % segmentation_id
     """1. ssh to director node.
         2. Create vlan-aware instance"vm-1" according the method given in test case above.
         3. Create another instance "vm-3" on the same network as the first instance. Dont create interfaces on this instance.
@@ -413,9 +435,74 @@ def test_case7():
     print("====         VLAN AWARE VMS CASE 7:      verify flow of untagged traffic.                            =====")
     print("==========================================================================================================")
     try:
-        pass
+        network = creation_object.os_create_sriov_enabled_network(logger, conn_create,
+                                                                  network_name=network_name,
+                                                                  port_name=sriov_port,
+                                        subnet_name=subnet_name, cidr=cidr, gateway=gateway,
+                                        network_bool=True, subnet_bool=True, port_bool=True
+                                        )
+        # pdb.set_trace()
+        router = creation_object.os_router_creation(logger, conn_create, router_name=router_name,
+                                                     port_name=sriov_port, net_name=network_name)
+        print("========             SERVER 1 CREATING WITH PARENT PORT                                =====")
+        output = creation_object.os_create_vlan_aware_instance(logger, conn_create, parent_network=parent_network1,
+                                                               parentport_name=parentport_name1,
+                                                               subport_network=subport_network,
+                                                               subport_name=subport_name1,
+                                                               trunk_name=trunk_name,
+                                                               flavor_name=flavor_name,
+                                                               availability_zone=availability_zone,
+                                                               image_name=image_name,
+                                                               server_name=server_name1,
+                                                               sec_group=security_group,
+                                                               segmentation_id=segmentation_id,
+                                                               segmentation_type=segmentation_type)
+
+        pdb.set_trace()
+        server_ip = output[2]
+        subport_ip = output[3]
+        ssh_obj.ssh_vlan_aware_vm(logger, server_ip, old_eth_file_path, new_eth_file_path, old_route_file_path,
+                                  new_route_file_path, subport_ip, gateway, segmentation_id, metricnumber)
+        ssh_obj.ssh_close()
+
+        legacy = creation_object.create_1_instances_on_same_compute_same_network(logger, conn_create, server_name=dpdk_server,
+                                                                               network_name=network_name,
+                                                                               subnet_name=subnet_name,
+                                                                               router_name=router_name, port_name=dpdk_port,
+                                                                               zone=zone, cidr=cidr,
+                                                            gateway_ip=gateway, flavor_name=dpdk_flavor, image_name=image,
+                                                            secgroup_name=secgroup, assign_floating_ip=True)
+        # pdb.set_trace()
+        time.sleep(10)
+        ssh_obj.ssh_to(logger, ip=sriov[2][1],username="centos", key_file_name=data["key_file_path"])
+        ping = ssh_obj.simple_ping_check(logger, dpdk[3])
+
+        if ping:
+            logger.info ("Test 9 same compute and same network successful")
+        else:
+            logger.info ("Test 9 same compute and same network failed")
+
+        ssh_obj.ssh_close()
+        # pdb.set_trace()
+        if deleteall:
+            delete_object.delete_2_instances_and_router_with_1_network_2ports(logger, conn_delete, server1_name=sriov_server,
+                                                                             server2_name=dpdk_server,
+                                                                             network_name=network_name,
+                                                                             router_name=router_name,
+                                                                             port1_name=sriov_port,
+                                                                             port2_name=dpdk_port)
+        return ping
     except:
-        pass
+        logger.info ("Unable to execute test case 9")
+        logger.info ("\nError: " + str(sys.exc_info()[0]))
+        logger.info ("Cause: " + str(sys.exc_info()[1]))
+        logger.info ("Line No: %s \n" % (sys.exc_info()[2].tb_lineno))
+        delete_object.delete_2_instances_and_router_with_1_network_2ports(logger, conn_delete, server1_name=sriov_server,
+                                                                                 server2_name=dpdk_server,
+                                                                                 network_name=network_name,
+                                                                                 router_name=router_name,
+                                                                                 port1_name=sriov_port,
+                                                                                 port2_name=dpdk_port)
 # test_case1()
 test_case3(delete_all=True)
 
