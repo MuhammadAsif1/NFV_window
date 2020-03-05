@@ -42,8 +42,8 @@ Image name should be ‘centos’
 - Clone repository
   > https://github.com/MuhammadAsif1/NFV_window.git
 
-‘setup.json’ contained parameters(network name, server name, zones etc) and features .py file will get these parameters values.
-Change stamp’s json file (e.g R8_stamp_data.json) according to the required parameter values.
+- ‘setup.json’ contained parameters(network name, server name, zones etc) and features .py file will get these parameters values.
+  Change stamp’s json file (e.g R8_stamp_data.json) according to the required parameter values.
 
 
 # Execute Test Cases:
