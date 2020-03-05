@@ -2,7 +2,7 @@
 |------------------|-----------------------------|---------------------|
 | Barbican	       |   20	                      |     Bash            |
 | Octavia	       |   17	                      |     Python          |
-DVR	      44	                           Python
+| DVR	             |   44	                      |     Python          |
 HugePages	10	                           Bash
 Manila	   26	                           Python
 MTU	      30	                           Python
