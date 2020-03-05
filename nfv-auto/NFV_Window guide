@@ -1,6 +1,7 @@
-Features	   No. of Test Cases Automated	Automation Language
-Barbican	   20	                           Bash
-Octavia	   17	                           Python
+| Features	       | No. of Test Cases Automated | Automation Language |
+|------------------|-----------------------------|----------------------
+| Barbican	       |   20	                      |     Bash            |
+| Octavia	       |   17	                      |     Python          |
 DVR	      44	                           Python
 HugePages	10	                           Bash
 Manila	   26	                           Python
