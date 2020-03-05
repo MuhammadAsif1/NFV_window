@@ -21,9 +21,9 @@ NFV_window repo contains RHOSP Cloud features test cases automation scripts. Aut
 # Guide to Execute Scripts:
 
 # Pre-Request to run Automated test cases:
-Create ssh key
-- > $ openstack keypair create ssh-key > ssh-key.pem
-- > $ chmod 400 ssh-key.pem
+- Create ssh key
+> $ openstack keypair create ssh-key > ssh-key.pem
+> $ chmod 400 ssh-key.pem
 
 Create image or execute sanity script which automatically create public network and “centos” image on Openstack.
 Image name should be ‘centos’
