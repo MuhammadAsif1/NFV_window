@@ -22,26 +22,25 @@ NFV_window repo contains RHOSP Cloud features test cases automation scripts. Aut
 
 # Pre-Request to run Automated test cases:
 - Create ssh key
-> $ openstack keypair create ssh-key > ssh-key.pem
+  > $ openstack keypair create ssh-key > ssh-key.pem
 
-> $ chmod 400 ssh-key.pem
+  > $ chmod 400 ssh-key.pem
 
 - Create image or execute sanity script which automatically create public network and “centos” image on Openstack.
 Image name should be ‘centos’
 
-‘or’
+  ‘or’
 
-> $ source <overcloud>
+  > $ source <overcloud>
    
-> $ python pilot/deployment-validation/sanity_test.sh
-
+  > $ python pilot/deployment-validation/sanity_test.sh
 
 - If require then create availability zones by using python script
 
-> $ python NFV_window/nfv-auto/availability-zone-creation.sh
+  > $ python NFV_window/nfv-auto/availability-zone-creation.sh
 
 - Clone repository
-> https://github.com/MuhammadAsif1/NFV_window.git
+  > https://github.com/MuhammadAsif1/NFV_window.git
 
 ‘setup.json’ contained parameters(network name, server name, zones etc) and features .py file will get these parameters values.
 Change stamp’s json file (e.g R8_stamp_data.json) according to the required parameter values.
