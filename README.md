@@ -1,25 +1,26 @@
 # NFV_window
-NFV_window repo contains RHOSP Cloud features test cases automation scripts. Automation scripts are written in Python and Bash. Follow "NFV_window/nfv-auto/NFV_Window guide.docx" to execute scripts.  
+NFV_window repo contains RHOSP Cloud features test cases automation scripts. Automation scripts are written in Python and Bash. Follow given instructions to execute scripts.  
 # Features List
 | Features	       | No. of Test Cases Automated | Automation Language |
 |------------------|-----------------------------|---------------------|
 | Barbican	       |   20	                      |     Bash            |
 | Octavia	       |   17	                      |     Python          |
 | DVR	             |   44	                      |     Python          |
-HugePages	10	                           Bash
-Manila	   26	                           Python
-MTU	      30	                           Python
-SRIOV	      22	                           Python
-NUMA	      11	                           Python
-OVS-DPDK	   48	                           Python
-OVS-DPDK-&-SRIOV	12	                     Python
-SRIOV_OVS-offload	16                      Python
+| HugePages	       |   10                        |     Bash            |
+| Manila	          |   26	                      |     Python          |
+| MTU	             |   30	                      |     Python          |
+| SRIOV	          |   22	                      |     Python          |
+| NUMA	          |   11	                      |     Python          |
+| OVS-DPDK         |	  48	                      |     Python          |
+| OVS-DPDK-&-SRIOV |   12	                      |     Python          |
+| SRIOV_OVS-offload|	  16                        |     Python          |
 
 
 
-Guide Execute Scripts:
 
-Pre-Request to run Automated test cases:
+# Guide Execute Scripts:
+
+# Pre-Request to run Automated test cases:
 Create ssh key
 $ openstack keypair create ssh-key > ssh-key.pem
 $ chmod 400 ssh-key.pem
@@ -40,7 +41,7 @@ https://github.com/MuhammadAsif1/NFV_window.git
 Change stamp’s json file (e.g R8_stamp_data.json) according to the required parameter values.
 
 
-Execute Test Cases:
+# Execute Test Cases:
 Setup environment  
 Install virtualenv using pip on director
    $ pip install virtualenv
