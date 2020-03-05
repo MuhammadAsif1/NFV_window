@@ -1,3 +1,15 @@
+Features	   No. of Test Cases Automated	Automation Language
+Barbican	   20	                           Bash
+Octavia	   17	                           Python
+DVR	      44	                           Python
+HugePages	10	                           Bash
+Manila	   26	                           Python
+MTU	      30	                           Python
+SRIOV	      22	                           Python
+NUMA	      11	                           Python
+OVS-DPDK	   48	                           Python
+OVS-DPDK-&-SRIOV	12	                     Python
+SRIOV_OVS-offload	16                      Python
 
 
 
