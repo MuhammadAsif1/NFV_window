@@ -28,28 +28,34 @@ NFV_window repo contains RHOSP Cloud features test cases automation scripts. Aut
 
 - Create image or execute sanity script which automatically create public network and “centos” image on Openstack.
 Image name should be ‘centos’
+
 ‘or’
+
 > $ source <overcloud>
+   
 > $ python pilot/deployment-validation/sanity_test.sh
 
 
-If require then create availability zones by using python script
-$ python NFV_window/nfv-auto/availability-zone-creation.sh
+- If require then create availability zones by using python script
 
-Clone repository
-https://github.com/MuhammadAsif1/NFV_window.git
+> $ python NFV_window/nfv-auto/availability-zone-creation.sh
+
+- Clone repository
+> https://github.com/MuhammadAsif1/NFV_window.git
+
 ‘setup.json’ contained parameters(network name, server name, zones etc) and features .py file will get these parameters values.
 Change stamp’s json file (e.g R8_stamp_data.json) according to the required parameter values.
 
 
 # Execute Test Cases:
-Setup environment  
-Install virtualenv using pip on director
-   $ pip install virtualenv
-Create a virtual environment
-   $ virtualenv  <env-name>
-Active your virtual environment
-   $ source <env-name>/bin/activate
-Install paramiko and sdk package
-   $ pip install openstacksdk==0.22.0
-   $ pip install paramiko==2.4.2
+- Setup environment  
+- Install virtualenv using pip on director
+  > $ pip install virtualenv
+- Create a virtual environment
+  > $ virtualenv  <env-name>
+- Active your virtual environment
+  > $ source <env-name>/bin/activate
+- Install paramiko and sdk package
+  > $ pip install openstacksdk==0.22.0
+   
+  > $ pip install paramiko==2.4.2
